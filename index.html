@@ -2,8 +2,8 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Myszojelen 3.1</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Myszojelen 3.2 Mobile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <style>
   html, body {
     margin: 0;
@@ -12,8 +12,10 @@
     background: #020617;
     color: #ffffff;
     font-family: Arial, sans-serif;
+    touch-action: none;
   }
   canvas { display: block; }
+
   #hud {
     position: fixed;
     top: 10px;
@@ -21,7 +23,9 @@
     font-size: 14px;
     line-height: 1.35;
     user-select: none;
+    pointer-events: none;
   }
+
   #bossbar {
     position: fixed;
     top: 10px;
@@ -31,12 +35,14 @@
     border: 1px solid #ffffff;
     display: none;
     user-select: none;
+    pointer-events: none;
   }
   #bossfill {
     height: 100%;
     width: 100%;
     background: #ef4444;
   }
+
   #buffs {
     position: fixed;
     bottom: 10px;
@@ -44,15 +50,9 @@
     font-size: 12px;
     opacity: 0.95;
     user-select: none;
+    pointer-events: none;
   }
-  #hint {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    font-size: 12px;
-    opacity: 0.7;
-    user-select: none;
-  }
+
   #overlay {
     position: fixed;
     inset: 0;
@@ -81,7 +81,72 @@
     cursor: pointer;
     font-weight: 700;
   }
-  #btn:active { transform: translateY(1px); }
+
+  /* Sterowanie mobilne */
+  #controls {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+  }
+  #movePad {
+    position: fixed;
+    left: 14px;
+    bottom: 14px;
+    width: 140px;
+    height: 140px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.22);
+    background: rgba(2,6,23,0.35);
+    backdrop-filter: blur(6px);
+    pointer-events: auto;
+  }
+  #moveKnob {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 54px;
+    height: 54px;
+    margin-left: -27px;
+    margin-top: -27px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(56,189,248,0.35);
+  }
+  #shootBtn {
+    position: fixed;
+    right: 14px;
+    bottom: 18px;
+    width: 150px;
+    height: 150px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.22);
+    background: rgba(2,6,23,0.35);
+    backdrop-filter: blur(6px);
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+  }
+  #shootBtn span {
+    display: inline-block;
+    padding: 10px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.20);
+    background: rgba(239,68,68,0.22);
+  }
+  #mobileHint {
+    position: fixed;
+    right: 12px;
+    top: 40px;
+    font-size: 12px;
+    opacity: 0.65;
+    user-select: none;
+    pointer-events: none;
+    max-width: 240px;
+    text-align: right;
+  }
 </style>
 </head>
 <body>
@@ -97,7 +162,13 @@
 
 <div id="bossbar"><div id="bossfill"></div></div>
 <div id="buffs"></div>
-<div id="hint">Klikaj aby strzelac, celujesz kursorem</div>
+
+<div id="mobileHint">Telefon: lewy pad ruch gora dol, prawy przycisk strzal</div>
+
+<div id="controls">
+  <div id="movePad"><div id="moveKnob"></div></div>
+  <div id="shootBtn"><span>STRZAL</span></div>
+</div>
 
 <div id="overlay">
   <div id="panel">
@@ -123,6 +194,10 @@
   const overlay = document.getElementById("overlay");
   const endtext = document.getElementById("endtext");
   const btn = document.getElementById("btn");
+
+  const movePad = document.getElementById("movePad");
+  const moveKnob = document.getElementById("moveKnob");
+  const shootBtn = document.getElementById("shootBtn");
 
   function resize() {
     canvas.width = innerWidth;
@@ -176,10 +251,6 @@
   let bossSpawnTimer = 0;
   let bossShootTimer = 0;
 
-  addEventListener("mousemove", e => mouseY = e.clientY);
-  addEventListener("click", () => shoot());
-  btn.addEventListener("click", () => restart());
-
   function restart() {
     state.score = 0;
     state.combo = 0;
@@ -189,6 +260,7 @@
     state.gameOver = false;
 
     player.y = canvas.height / 2;
+    mouseY = player.y;
 
     shots.length = 0;
     enemies.length = 0;
@@ -225,6 +297,8 @@
     bestEl.textContent = best;
   }
 
+  btn.addEventListener("click", restart);
+
   function spawnEnemy() {
     if (state.gameOver) return;
     if (boss) return;
@@ -250,7 +324,7 @@
     };
     bossbar.style.display = "block";
     bossfill.style.width = "100%";
-    bossShootTimer = 0.6;
+    bossShootTimer = 0.35;
   }
 
   function dropBonus(x, y) {
@@ -261,7 +335,6 @@
       r: 14,
       type,
       vx: -180,
-      spin: rand(-6, 6),
       t: 9
     });
   }
@@ -327,13 +400,28 @@
     });
   }
 
+  function hitPlayer() {
+    state.lives -= 1;
+    state.combo = 0;
+    spawnParticles(player.x, player.y, 18);
+
+    if (state.lives <= 0) {
+      if (state.score > best) {
+        best = state.score;
+        localStorage.bestScore = String(best);
+      }
+      syncHud();
+      endGame();
+    }
+  }
+
   function update(dt) {
     if (state.gameOver) return;
 
     state.time += dt;
     state.difficulty += dt * 0.04;
 
-    player.y += (mouseY - player.y) * 0.22;
+    player.y += (mouseY - player.y) * 0.25;
     player.y = clamp(player.y, 40, canvas.height - 40);
 
     fire.timer = Math.max(0, fire.timer - dt);
@@ -424,22 +512,11 @@
         continue;
       }
 
-      const hitPlayer = Math.hypot(a.x - player.x, a.y - player.y) < (a.r + player.r);
-      if (hitPlayer) {
+      const hit = Math.hypot(a.x - player.x, a.y - player.y) < (a.r + player.r);
+      if (hit) {
         acorns.splice(i, 1);
-        state.lives -= 1;
-        state.combo = 0;
-        spawnParticles(player.x, player.y, 18);
-
-        if (state.lives <= 0) {
-          if (state.score > best) {
-            best = state.score;
-            localStorage.bestScore = String(best);
-          }
-          syncHud();
-          endGame();
-          return;
-        }
+        hitPlayer();
+        if (state.gameOver) return;
       }
     }
 
@@ -448,18 +525,8 @@
 
       if (e.x < -120) {
         enemies.splice(i, 1);
-        state.lives -= 1;
-        state.combo = 0;
-
-        if (state.lives <= 0) {
-          if (state.score > best) {
-            best = state.score;
-            localStorage.bestScore = String(best);
-          }
-          syncHud();
-          endGame();
-          return;
-        }
+        hitPlayer();
+        if (state.gameOver) return;
         continue;
       }
 
@@ -471,7 +538,6 @@
           state.score += 10 + state.combo;
           state.combo += 1;
           spawnParticles(e.x, e.y, 14);
-
           if (Math.random() < 0.35) dropBonus(e.x, e.y);
           break;
         }
@@ -508,12 +574,10 @@
 
     for (let i = bonuses.length - 1; i >= 0; i--) {
       const b = bonuses[i];
-
       if (b.t <= 0 || b.x < -80) {
         bonuses.splice(i, 1);
         continue;
       }
-
       if (Math.hypot(b.x - player.x, b.y - player.y) < (b.r + player.r + 6)) {
         activateBuff(b.type);
         bonuses.splice(i, 1);
@@ -559,9 +623,7 @@
     ctx.font = EMOJI_FONT;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    for (const s of shots) {
-      ctx.fillText("💩", s.x, s.y);
-    }
+    for (const s of shots) ctx.fillText("💩", s.x, s.y);
 
     for (const e of enemies) {
       ctx.save();
@@ -602,14 +664,12 @@
     }
 
     for (const b of bonuses) {
-      ctx.save();
       if (b.type === "rapid") ctx.fillStyle = "#fde047";
       if (b.type === "double") ctx.fillStyle = "#22d3ee";
       if (b.type === "homing") ctx.fillStyle = "#f0abfc";
       ctx.beginPath();
       ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
       ctx.fill();
-      ctx.restore();
     }
 
     for (const p of particles) {
@@ -634,16 +694,138 @@
   }
 
   setInterval(() => {
-    const base = 900;
-    const faster = Math.max(360, base - state.difficulty * 80);
-    if (!state.gameOver && !boss) {
-      spawnEnemy();
-    }
+    if (!state.gameOver && !boss) spawnEnemy();
   }, 650);
 
   requestAnimationFrame(loop);
   syncHud();
-</script>
 
+  /* Sterowanie mobilne */
+
+  let moveTouchId = null;
+  let shootTouchId = null;
+  let moveCenter = { x: 0, y: 0 };
+  let moveMax = 50;
+  let desiredY = player.y;
+
+  function setKnob(dx, dy) {
+    const d = Math.hypot(dx, dy);
+    let kx = dx;
+    let ky = dy;
+    if (d > moveMax) {
+      kx = dx / d * moveMax;
+      ky = dy / d * moveMax;
+    }
+    moveKnob.style.transform = "translate(" + kx + "px," + ky + "px)";
+    desiredY = clamp(player.y + ky * 6, 40, canvas.height - 40);
+    mouseY = desiredY;
+  }
+
+  function resetKnob() {
+    moveKnob.style.transform = "translate(0px,0px)";
+  }
+
+  function pointFromTouch(t) {
+    return { x: t.clientX, y: t.clientY, id: t.identifier };
+  }
+
+  function isInMovePad(x, y) {
+    const r = movePad.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  }
+
+  function isInShootBtn(x, y) {
+    const r = shootBtn.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  }
+
+  function updateMoveCenter() {
+    const r = movePad.getBoundingClientRect();
+    moveCenter.x = r.left + r.width / 2;
+    moveCenter.y = r.top + r.height / 2;
+  }
+  updateMoveCenter();
+  addEventListener("resize", updateMoveCenter);
+
+  movePad.addEventListener("touchstart", (ev) => {
+    ev.preventDefault();
+    if (moveTouchId !== null) return;
+    const t = ev.changedTouches[0];
+    const p = pointFromTouch(t);
+    moveTouchId = p.id;
+    updateMoveCenter();
+    setKnob(p.x - moveCenter.x, p.y - moveCenter.y);
+  }, { passive: false });
+
+  movePad.addEventListener("touchmove", (ev) => {
+    ev.preventDefault();
+    if (moveTouchId === null) return;
+    for (const t of ev.changedTouches) {
+      if (t.identifier === moveTouchId) {
+        const p = pointFromTouch(t);
+        setKnob(p.x - moveCenter.x, p.y - moveCenter.y);
+        break;
+      }
+    }
+  }, { passive: false });
+
+  movePad.addEventListener("touchend", (ev) => {
+    ev.preventDefault();
+    if (moveTouchId === null) return;
+    for (const t of ev.changedTouches) {
+      if (t.identifier === moveTouchId) {
+        moveTouchId = null;
+        resetKnob();
+        break;
+      }
+    }
+  }, { passive: false });
+
+  movePad.addEventListener("touchcancel", (ev) => {
+    ev.preventDefault();
+    moveTouchId = null;
+    resetKnob();
+  }, { passive: false });
+
+  shootBtn.addEventListener("touchstart", (ev) => {
+    ev.preventDefault();
+    if (shootTouchId !== null) return;
+    const t = ev.changedTouches[0];
+    shootTouchId = t.identifier;
+    shoot();
+  }, { passive: false });
+
+  shootBtn.addEventListener("touchmove", (ev) => {
+    ev.preventDefault();
+  }, { passive: false });
+
+  shootBtn.addEventListener("touchend", (ev) => {
+    ev.preventDefault();
+    for (const t of ev.changedTouches) {
+      if (t.identifier === shootTouchId) shootTouchId = null;
+    }
+  }, { passive: false });
+
+  shootBtn.addEventListener("touchcancel", (ev) => {
+    ev.preventDefault();
+    shootTouchId = null;
+  }, { passive: false });
+
+  document.body.addEventListener("touchstart", (ev) => {
+    ev.preventDefault();
+    const t = ev.changedTouches[0];
+    const x = t.clientX;
+    const y = t.clientY;
+
+    if (isInMovePad(x, y) || isInShootBtn(x, y)) return;
+
+    if (x > innerWidth * 0.55) {
+      shoot();
+    } else {
+      mouseY = y;
+    }
+  }, { passive: false });
+
+</script>
 </body>
 </html>
