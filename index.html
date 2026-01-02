@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Myszojelen 2.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+html,body{margin:0;padding:0;overflow:hidden;background:#020617;color:#fff;font-family:Arial}
+#hud{position:fixed;top:10px;left:10px;font-size:14px}
+#bossbar{position:fixed;top:10px;right:10px;width:200px;height:12px;border:1px solid #fff;display:none}
+#bossfill{height:100%;background:red;width:100%}
+canvas{display:block}
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+<div id="hud">
+Punkty: <span id="score">0</span><br>
+Rekord: <span id="best">0</span><br>
+Combo: <span id="combo">0</span>
+</div>
+<div id="bossbar"><div id="bossfill"></div></div>
+
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+const scoreEl = document.getElementById("score");
+const comboEl = document.getElementById("combo");
+const bestEl = document.getElementById("best");
+const bossbar = document.getElementById("bossbar");
+const bossfill = document.getElementById("bossfill");
+
+const face = new Image();
+face.src = "face.png";
+
+function resize(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+addEventListener("resize",resize);
+resize();
+
+let score = 0;
+let combo = 0;
+let best = localStorage.bestScore||0;
+bestEl.textContent = best;
+
+const player = {x:80,y:canvas.height/2};
+let mouseY = player.y;
+
+const shots=[];
+const enemies=[];
+const particles=[];
+const bonuses=[];
+
+let fireCooldown=0.35;
+let fireTimer=0;
+let doubleShot=false;
+let homing=false;
+let difficulty=1;
+let boss=null;
+
+addEventListener("mousemove",e=>mouseY=e.clientY);
+addEventListener("click",shoot);
+
+function shoot(){
+  if(fireTimer>0)return;
+  fireTimer=fireCooldown;
+  spawnShot(0);
+  if(doubleShot){
+    spawnShot(-0.2);
+    spawnShot(0.2);
+  }
+}
+
+function spawnShot(angleOffset){
+  shots.push({
+    x:player.x,y:player.y,
+    vx:Math.cos(angleOffset)*900,
+    vy:Math.sin(angleOffset)*900,
+    r:10,
+    homing
+  });
+}
+
+function spawnEnemy(){
+  if(boss)return;
+  enemies.push({
+    x:canvas.width+40,
+    y:Math.random()*(canvas.height-80)+40,
+    r:25,
+    vx:150+Math.random()*difficulty*20,
+    hp:1
+  });
+}
+
+function spawnBoss(){
+  boss={
+    x:canvas.width-200,
+    y:canvas.height/2,
+    r:80,
+    hp:50+Math.floor(difficulty*10),
+    max:50+Math.floor(difficulty*10)
+  };
+  bossbar.style.display="block";
+}
+
+function dropBonus(x,y){
+  const types=["rapid","double","homing"];
+  bonuses.push({x,y,r:12,type:types[Math.floor(Math.random()*types.length)],t:8});
+}
+
+function update(dt){
+  fireTimer-=dt;
+  player.y += (mouseY-player.y)*0.2;
+
+  shots.forEach(s=>{
+    if(s.homing && enemies.length){
+      const t=enemies[0];
+      const dx=t.x-s.x,dy=t.y-s.y;
+      const d=Math.hypot(dx,dy);
+      s.vx+=(dx/d)*200*dt;
+      s.vy+=(dy/d)*200*dt;
+    }
+    s.x+=s.vx*dt;
+    s.y+=s.vy*dt;
+  });
+
+  enemies.forEach(e=>e.x-=e.vx*dt);
+
+  if(boss){
+    boss.y+=Math.sin(performance.now()/500)*50*dt;
+  }
+
+  for(let i=shots.length-1;i>=0;i--){
+    const s=shots[i];
+    if(s.x>canvas.width||s.y<0||s.y>canvas.height){
+      shots.splice(i,1);
+      score=Math.max(0,score-2);
+      combo=0;
+    }
+  }
+
+  for(let i=enemies.length-1;i>=0;i--){
+    const e=enemies[i];
+    for(let j=shots.length-1;j>=0;j--){
+      const s=shots[j];
+      if(Math.hypot(e.x-s.x,e.y-s.y)<e.r+s.r){
+        enemies.splice(i,1);
+        shots.splice(j,1);
+        score+=10+combo;
+        combo++;
+        if(Math.random()<0.3)dropBonus(e.x,e.y);
+        break;
+      }
+    }
+  }
+
+  if(boss){
+    for(let j=shots.length-1;j>=0;j--){
+      const s=shots[j];
+      if(Math.hypot(boss.x-s.x,boss.y-s.y)<boss.r+s.r){
+        shots.splice(j,1);
+        boss.hp--;
+        if(boss.hp<=0){
+          score+=500;
+          boss=null;
+          bossbar.style.display="none";
+        }
+      }
+    }
+    bossfill.style.width=(boss.hp/boss.max*100)+"%";
+  }
+
+  bonuses.forEach(b=>b.t-=dt);
+  for(let i=bonuses.length-1;i>=0;i--){
+    const b=bonuses[i];
+    if(Math.hypot(b.x-player.x,b.y-player.y)<b.r+20){
+      if(b.type==="rapid")fireCooldown=0.15;
+      if(b.type==="double")doubleShot=true;
+      if(b.type==="homing")homing=true;
+      bonuses.splice(i,1);
+    }
+    if(b.t<=0)bonuses.splice(i,1);
+  }
+
+  difficulty+=dt*0.03;
+  if(score>best){
+    best=score;
+    localStorage.bestScore=best;
+    bestEl.textContent=best;
+  }
+
+  scoreEl.textContent=score;
+  comboEl.textContent=combo;
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  ctx.fillStyle="#38bdf8";
+  ctx.beginPath();
+  ctx.arc(player.x,player.y,18,0,Math.PI*2);
+  ctx.fill();
+
+  shots.forEach(s=>{
+    ctx.font="20px serif";
+    ctx.fillText("??",s.x-10,s.y+10);
+  });
+
+  enemies.forEach(e=>{
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(e.x,e.y,e.r,0,Math.PI*2);
+    ctx.clip();
+    ctx.drawImage(face,e.x-e.r,e.y-e.r,e.r*2,e.r*2);
+    ctx.restore();
+  });
+
+  if(boss){
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(boss.x,boss.y,boss.r,0,Math.PI*2);
+    ctx.clip();
+    ctx.drawImage(face,boss.x-boss.r,boss.y-boss.r,boss.r*2,boss.r*2);
+    ctx.restore();
+  }
+
+  bonuses.forEach(b=>{
+    ctx.fillStyle=b.type==="rapid"?"yellow":b.type==="double"?"cyan":"magenta";
+    ctx.beginPath();
+    ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+    ctx.fill();
+  });
+}
+
+let last=performance.now();
+function loop(t){
+  const dt=(t-last)/1000;
+  last=t;
+  update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+
+setInterval(()=>spawnEnemy(),900);
+setInterval(()=>{if(!boss&&difficulty>3)spawnBoss()},15000);
+requestAnimationFrame(loop);
+</script>
+
+</body>
+</html>
