@@ -2,151 +2,80 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Myszojelen 3.2 Mobile</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Myszojelen v3.3</title>
 <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background: #020617;
-    color: #ffffff;
-    font-family: Arial, sans-serif;
-    touch-action: none;
-  }
-  canvas { display: block; }
-
-  #hud {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    font-size: 14px;
-    line-height: 1.35;
-    user-select: none;
-    pointer-events: none;
-  }
-
-  #bossbar {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    width: 220px;
-    height: 12px;
-    border: 1px solid #ffffff;
-    display: none;
-    user-select: none;
-    pointer-events: none;
-  }
-  #bossfill {
-    height: 100%;
-    width: 100%;
-    background: #ef4444;
-  }
-
-  #buffs {
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
-    font-size: 12px;
-    opacity: 0.95;
-    user-select: none;
-    pointer-events: none;
-  }
-
-  #overlay {
-    position: fixed;
-    inset: 0;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: rgba(2,6,23,0.78);
-  }
-  #panel {
-    width: min(520px, 92vw);
-    background: rgba(2,6,23,0.92);
-    border: 1px solid rgba(255,255,255,0.18);
-    border-radius: 14px;
-    padding: 14px 14px 12px;
-    box-shadow: 0 18px 60px rgba(0,0,0,0.55);
-  }
-  #panel h2 { margin: 0 0 6px 0; font-size: 18px; }
-  #panel p { margin: 0 0 10px 0; font-size: 13px; opacity: 0.9; }
-  #btn {
-    appearance: none;
-    border: 1px solid rgba(255,255,255,0.25);
-    background: rgba(2,6,23,0.8);
-    color: #fff;
-    border-radius: 12px;
-    padding: 10px 12px;
-    cursor: pointer;
-    font-weight: 700;
-  }
-
-  /* Sterowanie mobilne */
-  #controls {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-  }
-  #movePad {
-    position: fixed;
-    left: 14px;
-    bottom: 14px;
-    width: 140px;
-    height: 140px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.22);
-    background: rgba(2,6,23,0.35);
-    backdrop-filter: blur(6px);
-    pointer-events: auto;
-  }
-  #moveKnob {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 54px;
-    height: 54px;
-    margin-left: -27px;
-    margin-top: -27px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.25);
-    background: rgba(56,189,248,0.35);
-  }
-  #shootBtn {
-    position: fixed;
-    right: 14px;
-    bottom: 18px;
-    width: 150px;
-    height: 150px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.22);
-    background: rgba(2,6,23,0.35);
-    backdrop-filter: blur(6px);
-    pointer-events: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-  }
-  #shootBtn span {
-    display: inline-block;
-    padding: 10px 12px;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.20);
-    background: rgba(239,68,68,0.22);
-  }
-  #mobileHint {
-    position: fixed;
-    right: 12px;
-    top: 40px;
-    font-size: 12px;
-    opacity: 0.65;
-    user-select: none;
-    pointer-events: none;
-    max-width: 240px;
-    text-align: right;
-  }
+html, body{
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  background:#020617;
+  color:#ffffff;
+  font-family:Arial, sans-serif;
+  touch-action:none;
+}
+canvas{ display:block; }
+#hud{
+  position:fixed;
+  top:10px;
+  left:10px;
+  font-size:14px;
+  line-height:1.35;
+  user-select:none;
+  pointer-events:none;
+}
+#bossbar{
+  position:fixed;
+  top:10px;
+  right:10px;
+  width:220px;
+  height:12px;
+  border:1px solid #ffffff;
+  display:none;
+  pointer-events:none;
+}
+#bossfill{
+  height:100%;
+  width:100%;
+  background:#ef4444;
+}
+#buffs{
+  position:fixed;
+  bottom:10px;
+  left:10px;
+  font-size:12px;
+  opacity:0.95;
+  user-select:none;
+  pointer-events:none;
+}
+#overlay{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(2,6,23,0.78);
+}
+#panel{
+  width:min(520px, 92vw);
+  background:rgba(2,6,23,0.92);
+  border:1px solid rgba(255,255,255,0.18);
+  border-radius:14px;
+  padding:14px 14px 12px;
+  box-shadow:0 18px 60px rgba(0,0,0,0.55);
+}
+#panel h2{ margin:0 0 6px 0; font-size:18px; }
+#panel p{ margin:0 0 10px 0; font-size:13px; opacity:0.9; }
+#btn{
+  appearance:none;
+  border:1px solid rgba(255,255,255,0.25);
+  background:rgba(2,6,23,0.8);
+  color:#fff;
+  border-radius:12px;
+  padding:10px 12px;
+  cursor:pointer;
+  font-weight:700;
+}
 </style>
 </head>
 <body>
@@ -154,6 +83,7 @@
 <canvas id="c"></canvas>
 
 <div id="hud">
+  v3.3<br>
   Punkty: <span id="score">0</span><br>
   Rekord: <span id="best">0</span><br>
   Combo: <span id="combo">0</span><br>
@@ -162,13 +92,6 @@
 
 <div id="bossbar"><div id="bossfill"></div></div>
 <div id="buffs"></div>
-
-<div id="mobileHint">Telefon: lewy pad ruch gora dol, prawy przycisk strzal</div>
-
-<div id="controls">
-  <div id="movePad"><div id="moveKnob"></div></div>
-  <div id="shootBtn"><span>STRZAL</span></div>
-</div>
 
 <div id="overlay">
   <div id="panel">
@@ -179,652 +102,563 @@
 </div>
 
 <script>
-  const canvas = document.getElementById("c");
-  const ctx = canvas.getContext("2d");
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
 
-  const scoreEl = document.getElementById("score");
-  const bestEl = document.getElementById("best");
-  const comboEl = document.getElementById("combo");
-  const livesEl = document.getElementById("lives");
+const scoreEl = document.getElementById("score");
+const bestEl = document.getElementById("best");
+const comboEl = document.getElementById("combo");
+const livesEl = document.getElementById("lives");
 
-  const bossbar = document.getElementById("bossbar");
-  const bossfill = document.getElementById("bossfill");
-  const buffsEl = document.getElementById("buffs");
+const bossbar = document.getElementById("bossbar");
+const bossfill = document.getElementById("bossfill");
+const buffsEl = document.getElementById("buffs");
 
-  const overlay = document.getElementById("overlay");
-  const endtext = document.getElementById("endtext");
-  const btn = document.getElementById("btn");
+const overlay = document.getElementById("overlay");
+const endtext = document.getElementById("endtext");
+const btn = document.getElementById("btn");
 
-  const movePad = document.getElementById("movePad");
-  const moveKnob = document.getElementById("moveKnob");
-  const shootBtn = document.getElementById("shootBtn");
+function resize(){
+  canvas.width = innerWidth;
+  canvas.height = innerHeight;
+}
+addEventListener("resize", resize);
+resize();
 
-  function resize() {
-    canvas.width = innerWidth;
-    canvas.height = innerHeight;
-  }
-  addEventListener("resize", resize);
-  resize();
+const face = new Image();
+face.src = "face.png";
 
-  const face = new Image();
-  face.src = "face.png";
+const EMOJI_FONT = "22px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";
 
-  const EMOJI_FONT = "22px 'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif";
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+function rand(a, b){ return a + Math.random() * (b - a); }
 
-  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-  const rand = (a, b) => a + Math.random() * (b - a);
+let best = Number(localStorage.bestScore || 0);
+bestEl.textContent = String(best);
 
-  let best = Number(localStorage.bestScore || 0);
-  bestEl.textContent = best;
+const state = {
+  score: 0,
+  combo: 0,
+  lives: 3,
+  difficulty: 1,
+  time: 0,
+  gameOver: false
+};
 
-  const state = {
-    score: 0,
-    combo: 0,
-    lives: 3,
-    difficulty: 1,
-    time: 0,
-    gameOver: false
-  };
+const player = { x: 90, y: canvas.height / 2, r: 18 };
+let targetY = player.y;
 
-  const player = { x: 90, y: canvas.height / 2, r: 18 };
-  let mouseY = player.y;
+const shots = [];
+const enemies = [];
+const bonuses = [];
+const acorns = [];
+const particles = [];
 
-  const shots = [];
-  const enemies = [];
-  const bonuses = [];
-  const acorns = [];
-  const particles = [];
+const buffs = {
+  rapid: 0,
+  double: 0,
+  homing: 0
+};
 
-  const buffs = {
-    rapid: 0,
-    double: 0,
-    homing: 0
-  };
+const fire = {
+  baseCooldown: 0.33,
+  cooldown: 0.33,
+  timer: 0
+};
 
-  const fire = {
-    baseCooldown: 0.33,
-    cooldown: 0.33,
-    timer: 0
-  };
+let boss = null;
+let bossSpawnTimer = 0;
+let bossShootTimer = 0;
 
-  let boss = null;
-  let bossSpawnTimer = 0;
-  let bossShootTimer = 0;
+function syncHud(){
+  scoreEl.textContent = String(state.score);
+  comboEl.textContent = String(state.combo);
+  livesEl.textContent = String(state.lives);
+  bestEl.textContent = String(best);
+}
 
-  function restart() {
-    state.score = 0;
-    state.combo = 0;
-    state.lives = 3;
-    state.difficulty = 1;
-    state.time = 0;
-    state.gameOver = false;
+function restart(){
+  state.score = 0;
+  state.combo = 0;
+  state.lives = 3;
+  state.difficulty = 1;
+  state.time = 0;
+  state.gameOver = false;
 
-    player.y = canvas.height / 2;
-    mouseY = player.y;
+  player.y = canvas.height / 2;
+  targetY = player.y;
 
-    shots.length = 0;
-    enemies.length = 0;
-    bonuses.length = 0;
-    acorns.length = 0;
-    particles.length = 0;
+  shots.length = 0;
+  enemies.length = 0;
+  bonuses.length = 0;
+  acorns.length = 0;
+  particles.length = 0;
 
-    buffs.rapid = 0;
-    buffs.double = 0;
-    buffs.homing = 0;
+  buffs.rapid = 0;
+  buffs.double = 0;
+  buffs.homing = 0;
 
-    fire.cooldown = fire.baseCooldown;
-    fire.timer = 0;
+  fire.cooldown = fire.baseCooldown;
+  fire.timer = 0;
 
-    boss = null;
-    bossSpawnTimer = 0;
-    bossShootTimer = 0;
-    bossbar.style.display = "none";
+  boss = null;
+  bossSpawnTimer = 0;
+  bossShootTimer = 0;
+  bossbar.style.display = "none";
 
-    overlay.style.display = "none";
-    syncHud();
-  }
+  overlay.style.display = "none";
+  syncHud();
+}
 
-  function endGame() {
-    state.gameOver = true;
-    overlay.style.display = "flex";
-    endtext.textContent = "Wynik: " + state.score + "  Rekord: " + best;
-  }
+function endGame(){
+  state.gameOver = true;
+  overlay.style.display = "flex";
+  endtext.textContent = "Wynik: " + state.score + "  Rekord: " + best;
+}
 
-  function syncHud() {
-    scoreEl.textContent = state.score;
-    comboEl.textContent = state.combo;
-    livesEl.textContent = state.lives;
-    bestEl.textContent = best;
-  }
+btn.addEventListener("click", restart);
 
-  btn.addEventListener("click", restart);
+function activateBuff(type){
+  if(type === "rapid") buffs.rapid = Math.max(buffs.rapid, 6.0);
+  if(type === "double") buffs.double = Math.max(buffs.double, 8.0);
+  if(type === "homing") buffs.homing = Math.max(buffs.homing, 7.0);
+}
 
-  function spawnEnemy() {
-    if (state.gameOver) return;
-    if (boss) return;
-
-    const r = rand(22, 34);
-    enemies.push({
-      x: canvas.width + 60,
-      y: rand(60, canvas.height - 60),
-      r,
-      vx: 140 + state.difficulty * 28 + rand(0, 40)
-    });
-  }
-
-  function spawnBoss() {
-    if (state.gameOver) return;
-    boss = {
-      x: canvas.width - 180,
-      y: canvas.height / 2,
-      r: 92,
-      hp: Math.floor(70 + state.difficulty * 16),
-      max: Math.floor(70 + state.difficulty * 16),
-      phase: 0
-    };
-    bossbar.style.display = "block";
-    bossfill.style.width = "100%";
-    bossShootTimer = 0.35;
-  }
-
-  function dropBonus(x, y) {
-    const types = ["rapid", "double", "homing"];
-    const type = types[Math.floor(Math.random() * types.length)];
-    bonuses.push({
+function spawnParticles(x, y, count){
+  for(let i = 0; i < count; i++){
+    particles.push({
       x, y,
-      r: 14,
-      type,
-      vx: -180,
-      t: 9
+      vx: rand(0 - 220, 220),
+      vy: rand(0 - 220, 220),
+      t: rand(0.25, 0.6)
     });
   }
+}
 
-  function activateBuff(type) {
-    if (type === "rapid") buffs.rapid = Math.max(buffs.rapid, 6.0);
-    if (type === "double") buffs.double = Math.max(buffs.double, 8.0);
-    if (type === "homing") buffs.homing = Math.max(buffs.homing, 7.0);
-  }
-
-  function shoot() {
-    if (state.gameOver) return;
-    if (fire.timer > 0) return;
-
-    fire.timer = fire.cooldown;
-
-    createShot(0);
-
-    if (buffs.double > 0) {
-      createShot(-0.16);
-      createShot(0.16);
-    }
-  }
-
-  function createShot(angleOffset) {
-    const speed = 900;
-    shots.push({
-      x: player.x,
-      y: player.y,
-      vx: Math.cos(angleOffset) * speed,
-      vy: Math.sin(angleOffset) * speed,
-      r: 10,
-      homing: buffs.homing > 0,
-      alive: true
-    });
-  }
-
-  function spawnParticles(x, y, count) {
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x, y,
-        vx: rand(-220, 220),
-        vy: rand(-220, 220),
-        t: rand(0.25, 0.6)
-      });
-    }
-  }
-
-  function bossShootAcorn() {
-    if (!boss) return;
-    const dx = player.x - boss.x;
-    const dy = player.y - boss.y;
-    const d = Math.max(1, Math.hypot(dx, dy));
-    const speed = 320 + state.difficulty * 22;
-
-    acorns.push({
-      x: boss.x,
-      y: boss.y,
-      vx: (dx / d) * speed,
-      vy: (dy / d) * speed,
-      r: 8,
-      t: 6.0
-    });
-  }
-
-  function hitPlayer() {
-    state.lives -= 1;
-    state.combo = 0;
-    spawnParticles(player.x, player.y, 18);
-
-    if (state.lives <= 0) {
-      if (state.score > best) {
-        best = state.score;
-        localStorage.bestScore = String(best);
-      }
-      syncHud();
-      endGame();
-    }
-  }
-
-  function update(dt) {
-    if (state.gameOver) return;
-
-    state.time += dt;
-    state.difficulty += dt * 0.04;
-
-    player.y += (mouseY - player.y) * 0.25;
-    player.y = clamp(player.y, 40, canvas.height - 40);
-
-    fire.timer = Math.max(0, fire.timer - dt);
-
-    buffs.rapid = Math.max(0, buffs.rapid - dt);
-    buffs.double = Math.max(0, buffs.double - dt);
-    buffs.homing = Math.max(0, buffs.homing - dt);
-
-    fire.cooldown = fire.baseCooldown;
-    if (buffs.rapid > 0) fire.cooldown = 0.14;
-
-    shots.forEach(s => {
-      if (!s.alive) return;
-
-      if (s.homing) {
-        let tx = null;
-        let ty = null;
-
-        if (boss) {
-          tx = boss.x;
-          ty = boss.y;
-        } else if (enemies.length) {
-          let nearest = enemies[0];
-          let bestD = Infinity;
-          for (const e of enemies) {
-            const dd = (e.x - s.x) * (e.x - s.x) + (e.y - s.y) * (e.y - s.y);
-            if (dd < bestD) { bestD = dd; nearest = e; }
-          }
-          tx = nearest.x;
-          ty = nearest.y;
-        }
-
-        if (tx !== null) {
-          const dx = tx - s.x;
-          const dy = ty - s.y;
-          const d = Math.max(1, Math.hypot(dx, dy));
-          s.vx += (dx / d) * 220 * dt;
-          s.vy += (dy / d) * 220 * dt;
-        }
-      }
-
-      s.x += s.vx * dt;
-      s.y += s.vy * dt;
-
-      if (s.x > canvas.width + 60 || s.y < -60 || s.y > canvas.height + 60) {
-        s.alive = false;
-        state.score = Math.max(0, state.score - 2);
-        state.combo = 0;
-      }
-    });
-
-    for (let i = shots.length - 1; i >= 0; i--) {
-      if (!shots[i].alive) shots.splice(i, 1);
-    }
-
-    enemies.forEach(e => e.x -= e.vx * dt);
-
-    if (!boss) {
-      bossSpawnTimer += dt;
-      if (state.difficulty > 3 && bossSpawnTimer >= 16) {
-        bossSpawnTimer = 0;
-        spawnBoss();
-      }
-    }
-
-    if (boss) {
-      boss.phase += dt;
-      boss.y += Math.sin(boss.phase * 2.0) * 55 * dt;
-
-      bossShootTimer -= dt;
-      if (bossShootTimer <= 0) {
-        bossShootTimer = Math.max(0.35, 1.05 - state.difficulty * 0.08);
-        bossShootAcorn();
-      }
-    }
-
-    acorns.forEach(a => {
-      a.x += a.vx * dt;
-      a.y += a.vy * dt;
-      a.t -= dt;
-    });
-
-    for (let i = acorns.length - 1; i >= 0; i--) {
-      const a = acorns[i];
-
-      if (a.t <= 0 || a.x < -80 || a.x > canvas.width + 80 || a.y < -80 || a.y > canvas.height + 80) {
-        acorns.splice(i, 1);
-        continue;
-      }
-
-      const hit = Math.hypot(a.x - player.x, a.y - player.y) < (a.r + player.r);
-      if (hit) {
-        acorns.splice(i, 1);
-        hitPlayer();
-        if (state.gameOver) return;
-      }
-    }
-
-    for (let i = enemies.length - 1; i >= 0; i--) {
-      const e = enemies[i];
-
-      if (e.x < -120) {
-        enemies.splice(i, 1);
-        hitPlayer();
-        if (state.gameOver) return;
-        continue;
-      }
-
-      for (let j = shots.length - 1; j >= 0; j--) {
-        const s = shots[j];
-        if (Math.hypot(e.x - s.x, e.y - s.y) < e.r + s.r) {
-          enemies.splice(i, 1);
-          shots.splice(j, 1);
-          state.score += 10 + state.combo;
-          state.combo += 1;
-          spawnParticles(e.x, e.y, 14);
-          if (Math.random() < 0.35) dropBonus(e.x, e.y);
-          break;
-        }
-      }
-    }
-
-    if (boss) {
-      for (let j = shots.length - 1; j >= 0; j--) {
-        const s = shots[j];
-        if (Math.hypot(boss.x - s.x, boss.y - s.y) < boss.r + s.r) {
-          shots.splice(j, 1);
-          boss.hp -= 1;
-          spawnParticles(s.x, s.y, 8);
-
-          if (boss.hp <= 0) {
-            state.score += 600;
-            spawnParticles(boss.x, boss.y, 40);
-            if (Math.random() < 0.9) dropBonus(boss.x, boss.y);
-            if (Math.random() < 0.6) dropBonus(boss.x, boss.y);
-            boss = null;
-            bossbar.style.display = "none";
-            break;
-          } else {
-            bossfill.style.width = (boss.hp / boss.max * 100) + "%";
-          }
-        }
-      }
-    }
-
-    bonuses.forEach(b => {
-      b.x += b.vx * dt;
-      b.t -= dt;
-    });
-
-    for (let i = bonuses.length - 1; i >= 0; i--) {
-      const b = bonuses[i];
-      if (b.t <= 0 || b.x < -80) {
-        bonuses.splice(i, 1);
-        continue;
-      }
-      if (Math.hypot(b.x - player.x, b.y - player.y) < (b.r + player.r + 6)) {
-        activateBuff(b.type);
-        bonuses.splice(i, 1);
-        spawnParticles(player.x, player.y, 10);
-      }
-    }
-
-    particles.forEach(p => {
-      p.x += p.vx * dt;
-      p.y += p.vy * dt;
-      p.vx *= (1 - 2.5 * dt);
-      p.vy *= (1 - 2.5 * dt);
-      p.t -= dt;
-    });
-
-    for (let i = particles.length - 1; i >= 0; i--) {
-      if (particles[i].t <= 0) particles.splice(i, 1);
-    }
-
-    if (state.score > best) {
+function hitPlayer(){
+  state.lives = state.lives - 1;
+  state.combo = 0;
+  spawnParticles(player.x, player.y, 18);
+  if(state.lives <= 0){
+    if(state.score > best){
       best = state.score;
       localStorage.bestScore = String(best);
     }
-
     syncHud();
+    endGame();
   }
+}
 
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+function shoot(){
+  if(state.gameOver) return;
+  if(fire.timer > 0) return;
 
-    const g = ctx.createRadialGradient(canvas.width * 0.35, canvas.height * 0.35, 20, canvas.width * 0.35, canvas.height * 0.35, Math.max(canvas.width, canvas.height));
-    g.addColorStop(0, "rgba(56,189,248,0.10)");
-    g.addColorStop(0.5, "rgba(34,197,94,0.06)");
-    g.addColorStop(1, "rgba(2,6,23,1)");
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  fire.timer = fire.cooldown;
 
-    ctx.fillStyle = "#38bdf8";
-    ctx.beginPath();
-    ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
-    ctx.fill();
+  createShot(0);
 
-    ctx.font = EMOJI_FONT;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    for (const s of shots) ctx.fillText("💩", s.x, s.y);
+  if(buffs.double > 0){
+    createShot(0 - 0.16);
+    createShot(0.16);
+  }
+}
 
-    for (const e of enemies) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
-      ctx.clip();
-      if (face.complete) ctx.drawImage(face, e.x - e.r, e.y - e.r, e.r * 2, e.r * 2);
-      else {
-        ctx.fillStyle = "#22c55e";
-        ctx.fillRect(e.x - e.r, e.y - e.r, e.r * 2, e.r * 2);
+function createShot(angleOffset){
+  const speed = 900;
+
+  shots.push({
+    x: player.x,
+    y: player.y,
+    vx: Math.cos(angleOffset) * speed,
+    vy: Math.sin(angleOffset) * speed,
+    r: 10,
+    homing: buffs.homing > 0,
+    alive: true
+  });
+}
+
+function dropBonus(x, y){
+  const types = ["rapid","double","homing"];
+  const type = types[Math.floor(Math.random() * types.length)];
+  bonuses.push({
+    x, y,
+    r: 14,
+    type,
+    vx: 0 - 180,
+    t: 9
+  });
+}
+
+function spawnEnemy(){
+  if(state.gameOver) return;
+  if(boss) return;
+
+  const r = rand(22, 34);
+  enemies.push({
+    x: canvas.width + 60,
+    y: rand(60, canvas.height - 60),
+    r,
+    vx: 140 + state.difficulty * 28 + rand(0, 40)
+  });
+}
+
+function spawnBoss(){
+  if(state.gameOver) return;
+
+  boss = {
+    x: canvas.width - 180,
+    y: canvas.height / 2,
+    r: 92,
+    hp: Math.floor(70 + state.difficulty * 16),
+    max: Math.floor(70 + state.difficulty * 16),
+    phase: 0
+  };
+
+  bossbar.style.display = "block";
+  bossfill.style.width = "100%";
+  bossShootTimer = 0.25;
+}
+
+function bossShootAcorn(){
+  if(!boss) return;
+
+  const dx = player.x - boss.x;
+  const dy = player.y - boss.y;
+  const d = Math.max(1, Math.hypot(dx, dy));
+  const speed = 320 + state.difficulty * 22;
+
+  acorns.push({
+    x: boss.x,
+    y: boss.y,
+    vx: (dx / d) * speed,
+    vy: (dy / d) * speed,
+    r: 8,
+    t: 6.0
+  });
+}
+
+function update(dt){
+  if(state.gameOver) return;
+
+  state.time += dt;
+  state.difficulty += dt * 0.04;
+
+  player.y += (targetY - player.y) * 0.25;
+  player.y = clamp(player.y, 40, canvas.height - 40);
+
+  fire.timer = Math.max(0, fire.timer - dt);
+
+  buffs.rapid = Math.max(0, buffs.rapid - dt);
+  buffs.double = Math.max(0, buffs.double - dt);
+  buffs.homing = Math.max(0, buffs.homing - dt);
+
+  fire.cooldown = fire.baseCooldown;
+  if(buffs.rapid > 0) fire.cooldown = 0.14;
+
+  shots.forEach(s => {
+    if(!s.alive) return;
+
+    if(s.homing){
+      let tx = null;
+      let ty = null;
+
+      if(boss){
+        tx = boss.x;
+        ty = boss.y;
+      } else if(enemies.length){
+        let nearest = enemies[0];
+        let bestD = Infinity;
+        for(const e of enemies){
+          const dd = (e.x - s.x) * (e.x - s.x) + (e.y - s.y) * (e.y - s.y);
+          if(dd < bestD){ bestD = dd; nearest = e; }
+        }
+        tx = nearest.x;
+        ty = nearest.y;
       }
-      ctx.restore();
-    }
 
-    if (boss) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(boss.x, boss.y, boss.r, 0, Math.PI * 2);
-      ctx.clip();
-      if (face.complete) ctx.drawImage(face, boss.x - boss.r, boss.y - boss.r, boss.r * 2, boss.r * 2);
-      else {
-        ctx.fillStyle = "#f59e0b";
-        ctx.fillRect(boss.x - boss.r, boss.y - boss.r, boss.r * 2, boss.r * 2);
+      if(tx !== null){
+        const dx = tx - s.x;
+        const dy = ty - s.y;
+        const d = Math.max(1, Math.hypot(dx, dy));
+        s.vx += (dx / d) * 220 * dt;
+        s.vy += (dy / d) * 220 * dt;
       }
-      ctx.restore();
     }
 
-    for (const a of acorns) {
-      ctx.fillStyle = "#a16207";
-      ctx.beginPath();
-      ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
-      ctx.fill();
+    s.x += s.vx * dt;
+    s.y += s.vy * dt;
 
-      ctx.fillStyle = "rgba(0,0,0,0.35)";
-      ctx.beginPath();
-      ctx.arc(a.x + 3, a.y + 3, a.r - 1, 0, Math.PI * 2);
-      ctx.fill();
+    if(s.x > canvas.width + 60 || s.y < 0 - 60 || s.y > canvas.height + 60){
+      s.alive = false;
+      state.score = Math.max(0, state.score - 2);
+      state.combo = 0;
     }
+  });
 
-    for (const b of bonuses) {
-      if (b.type === "rapid") ctx.fillStyle = "#fde047";
-      if (b.type === "double") ctx.fillStyle = "#22d3ee";
-      if (b.type === "homing") ctx.fillStyle = "#f0abfc";
-      ctx.beginPath();
-      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    for (const p of particles) {
-      ctx.fillStyle = "rgba(255,255,255,0.7)";
-      ctx.fillRect(p.x, p.y, 2, 2);
-    }
-
-    const active = [];
-    if (buffs.rapid > 0) active.push("Rapid " + buffs.rapid.toFixed(1) + "s");
-    if (buffs.double > 0) active.push("Double " + buffs.double.toFixed(1) + "s");
-    if (buffs.homing > 0) active.push("Homing " + buffs.homing.toFixed(1) + "s");
-    buffsEl.textContent = active.join("  |  ");
+  for(let i = shots.length - 1; i >= 0; i--){
+    if(!shots[i].alive) shots.splice(i, 1);
   }
 
-  let last = performance.now();
-  function loop(t) {
-    const dt = Math.min(0.033, (t - last) / 1000);
-    last = t;
-    update(dt);
-    draw();
-    requestAnimationFrame(loop);
+  enemies.forEach(e => { e.x += (0 - e.vx) * dt; });
+
+  if(!boss){
+    bossSpawnTimer += dt;
+    if(state.difficulty > 3 && bossSpawnTimer >= 16){
+      bossSpawnTimer = 0;
+      spawnBoss();
+    }
   }
 
-  setInterval(() => {
-    if (!state.gameOver && !boss) spawnEnemy();
-  }, 650);
+  if(boss){
+    boss.phase += dt;
+    boss.y += Math.sin(boss.phase * 2.0) * 55 * dt;
 
-  requestAnimationFrame(loop);
+    bossShootTimer -= dt;
+    if(bossShootTimer <= 0){
+      bossShootTimer = Math.max(0.30, 0.95 - state.difficulty * 0.08);
+      bossShootAcorn();
+    }
+  }
+
+  acorns.forEach(a => {
+    a.x += a.vx * dt;
+    a.y += a.vy * dt;
+    a.t -= dt;
+  });
+
+  for(let i = acorns.length - 1; i >= 0; i--){
+    const a = acorns[i];
+
+    if(a.t <= 0 || a.x < 0 - 80 || a.x > canvas.width + 80 || a.y < 0 - 80 || a.y > canvas.height + 80){
+      acorns.splice(i, 1);
+      continue;
+    }
+
+    const hit = Math.hypot(a.x - player.x, a.y - player.y) < (a.r + player.r);
+    if(hit){
+      acorns.splice(i, 1);
+      hitPlayer();
+      if(state.gameOver) return;
+    }
+  }
+
+  for(let i = enemies.length - 1; i >= 0; i--){
+    const e = enemies[i];
+
+    if(e.x < 0 - 120){
+      enemies.splice(i, 1);
+      hitPlayer();
+      if(state.gameOver) return;
+      continue;
+    }
+
+    for(let j = shots.length - 1; j >= 0; j--){
+      const s = shots[j];
+      if(Math.hypot(e.x - s.x, e.y - s.y) < e.r + s.r){
+        enemies.splice(i, 1);
+        shots.splice(j, 1);
+        state.score += 10 + state.combo;
+        state.combo += 1;
+        spawnParticles(e.x, e.y, 14);
+        if(Math.random() < 0.35) dropBonus(e.x, e.y);
+        break;
+      }
+    }
+  }
+
+  if(boss){
+    for(let j = shots.length - 1; j >= 0; j--){
+      const s = shots[j];
+      if(Math.hypot(boss.x - s.x, boss.y - s.y) < boss.r + s.r){
+        shots.splice(j, 1);
+        boss.hp = boss.hp - 1;
+        spawnParticles(s.x, s.y, 8);
+
+        if(boss.hp <= 0){
+          state.score += 600;
+          spawnParticles(boss.x, boss.y, 40);
+          if(Math.random() < 0.9) dropBonus(boss.x, boss.y);
+          if(Math.random() < 0.6) dropBonus(boss.x, boss.y);
+          boss = null;
+          bossbar.style.display = "none";
+          break;
+        } else {
+          bossfill.style.width = (boss.hp / boss.max * 100) + "%";
+        }
+      }
+    }
+  }
+
+  bonuses.forEach(b => {
+    b.x += b.vx * dt;
+    b.t -= dt;
+  });
+
+  for(let i = bonuses.length - 1; i >= 0; i--){
+    const b = bonuses[i];
+    if(b.t <= 0 || b.x < 0 - 80){
+      bonuses.splice(i, 1);
+      continue;
+    }
+    if(Math.hypot(b.x - player.x, b.y - player.y) < (b.r + player.r + 6)){
+      activateBuff(b.type);
+      bonuses.splice(i, 1);
+      spawnParticles(player.x, player.y, 10);
+    }
+  }
+
+  particles.forEach(p => {
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.vx *= (1 - 2.5 * dt);
+    p.vy *= (1 - 2.5 * dt);
+    p.t -= dt;
+  });
+
+  for(let i = particles.length - 1; i >= 0; i--){
+    if(particles[i].t <= 0) particles.splice(i, 1);
+  }
+
+  if(state.score > best){
+    best = state.score;
+    localStorage.bestScore = String(best);
+  }
+
   syncHud();
+}
 
-  /* Sterowanie mobilne */
+function draw(){
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  let moveTouchId = null;
-  let shootTouchId = null;
-  let moveCenter = { x: 0, y: 0 };
-  let moveMax = 50;
-  let desiredY = player.y;
+  const g = ctx.createRadialGradient(
+    canvas.width * 0.35, canvas.height * 0.35, 20,
+    canvas.width * 0.35, canvas.height * 0.35, Math.max(canvas.width, canvas.height)
+  );
+  g.addColorStop(0, "rgba(56,189,248,0.10)");
+  g.addColorStop(0.5, "rgba(34,197,94,0.06)");
+  g.addColorStop(1, "rgba(2,6,23,1)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  function setKnob(dx, dy) {
-    const d = Math.hypot(dx, dy);
-    let kx = dx;
-    let ky = dy;
-    if (d > moveMax) {
-      kx = dx / d * moveMax;
-      ky = dy / d * moveMax;
-    }
-    moveKnob.style.transform = "translate(" + kx + "px," + ky + "px)";
-    desiredY = clamp(player.y + ky * 6, 40, canvas.height - 40);
-    mouseY = desiredY;
+  ctx.fillStyle = "#38bdf8";
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, player.r, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.font = EMOJI_FONT;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  for(const s of shots){
+    ctx.fillText("💩", s.x, s.y);
   }
 
-  function resetKnob() {
-    moveKnob.style.transform = "translate(0px,0px)";
+  for(const e of enemies){
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2);
+    ctx.clip();
+    if(face.complete) ctx.drawImage(face, e.x - e.r, e.y - e.r, e.r * 2, e.r * 2);
+    ctx.restore();
   }
 
-  function pointFromTouch(t) {
-    return { x: t.clientX, y: t.clientY, id: t.identifier };
+  if(boss){
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(boss.x, boss.y, boss.r, 0, Math.PI * 2);
+    ctx.clip();
+    if(face.complete) ctx.drawImage(face, boss.x - boss.r, boss.y - boss.r, boss.r * 2, boss.r * 2);
+    ctx.restore();
   }
 
-  function isInMovePad(x, y) {
-    const r = movePad.getBoundingClientRect();
-    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  for(const a of acorns){
+    ctx.fillStyle = "#a16207";
+    ctx.beginPath();
+    ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+    ctx.fill();
   }
 
-  function isInShootBtn(x, y) {
-    const r = shootBtn.getBoundingClientRect();
-    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  for(const b of bonuses){
+    if(b.type === "rapid") ctx.fillStyle = "#fde047";
+    if(b.type === "double") ctx.fillStyle = "#22d3ee";
+    if(b.type === "homing") ctx.fillStyle = "#f0abfc";
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    ctx.fill();
   }
 
-  function updateMoveCenter() {
-    const r = movePad.getBoundingClientRect();
-    moveCenter.x = r.left + r.width / 2;
-    moveCenter.y = r.top + r.height / 2;
+  for(const p of particles){
+    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    ctx.fillRect(p.x, p.y, 2, 2);
   }
-  updateMoveCenter();
-  addEventListener("resize", updateMoveCenter);
 
-  movePad.addEventListener("touchstart", (ev) => {
-    ev.preventDefault();
-    if (moveTouchId !== null) return;
-    const t = ev.changedTouches[0];
-    const p = pointFromTouch(t);
-    moveTouchId = p.id;
-    updateMoveCenter();
-    setKnob(p.x - moveCenter.x, p.y - moveCenter.y);
-  }, { passive: false });
+  const active = [];
+  if(buffs.rapid > 0) active.push("Rapid " + buffs.rapid.toFixed(1) + "s");
+  if(buffs.double > 0) active.push("Double " + buffs.double.toFixed(1) + "s");
+  if(buffs.homing > 0) active.push("Homing " + buffs.homing.toFixed(1) + "s");
+  buffsEl.textContent = active.join("  |  ");
+}
 
-  movePad.addEventListener("touchmove", (ev) => {
-    ev.preventDefault();
-    if (moveTouchId === null) return;
-    for (const t of ev.changedTouches) {
-      if (t.identifier === moveTouchId) {
-        const p = pointFromTouch(t);
-        setKnob(p.x - moveCenter.x, p.y - moveCenter.y);
-        break;
-      }
-    }
-  }, { passive: false });
+let last = performance.now();
+function loop(t){
+  const dt = Math.min(0.033, (t - last) / 1000);
+  last = t;
+  update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
 
-  movePad.addEventListener("touchend", (ev) => {
-    ev.preventDefault();
-    if (moveTouchId === null) return;
-    for (const t of ev.changedTouches) {
-      if (t.identifier === moveTouchId) {
-        moveTouchId = null;
-        resetKnob();
-        break;
-      }
-    }
-  }, { passive: false });
+setInterval(() => {
+  if(!state.gameOver && !boss) spawnEnemy();
+}, 650);
 
-  movePad.addEventListener("touchcancel", (ev) => {
-    ev.preventDefault();
-    moveTouchId = null;
-    resetKnob();
-  }, { passive: false });
+requestAnimationFrame(loop);
+syncHud();
 
-  shootBtn.addEventListener("touchstart", (ev) => {
-    ev.preventDefault();
-    if (shootTouchId !== null) return;
-    const t = ev.changedTouches[0];
-    shootTouchId = t.identifier;
+let movePointerId = null;
+
+canvas.addEventListener("pointerdown", (ev) => {
+  if(state.gameOver) return;
+
+  try{ canvas.setPointerCapture(ev.pointerId); } catch(e){}
+
+  const x = ev.clientX;
+  const y = ev.clientY;
+
+  if(x < innerWidth * 0.55){
+    movePointerId = ev.pointerId;
+    targetY = y;
+  } else {
     shoot();
-  }, { passive: false });
+  }
 
-  shootBtn.addEventListener("touchmove", (ev) => {
-    ev.preventDefault();
-  }, { passive: false });
+  ev.preventDefault();
+});
 
-  shootBtn.addEventListener("touchend", (ev) => {
-    ev.preventDefault();
-    for (const t of ev.changedTouches) {
-      if (t.identifier === shootTouchId) shootTouchId = null;
-    }
-  }, { passive: false });
+canvas.addEventListener("pointermove", (ev) => {
+  if(movePointerId === null) return;
+  if(ev.pointerId !== movePointerId) return;
+  targetY = ev.clientY;
+  ev.preventDefault();
+});
 
-  shootBtn.addEventListener("touchcancel", (ev) => {
-    ev.preventDefault();
-    shootTouchId = null;
-  }, { passive: false });
+canvas.addEventListener("pointerup", (ev) => {
+  if(ev.pointerId === movePointerId) movePointerId = null;
+  ev.preventDefault();
+});
 
-  document.body.addEventListener("touchstart", (ev) => {
-    ev.preventDefault();
-    const t = ev.changedTouches[0];
-    const x = t.clientX;
-    const y = t.clientY;
+canvas.addEventListener("pointercancel", (ev) => {
+  if(ev.pointerId === movePointerId) movePointerId = null;
+  ev.preventDefault();
+});
 
-    if (isInMovePad(x, y) || isInShootBtn(x, y)) return;
+canvas.addEventListener("mousemove", (ev) => {
+  targetY = ev.clientY;
+});
 
-    if (x > innerWidth * 0.55) {
-      shoot();
-    } else {
-      mouseY = y;
-    }
-  }, { passive: false });
+canvas.addEventListener("click", (ev) => {
+  if(state.gameOver) return;
+  shoot();
+});
 
 </script>
 </body>
